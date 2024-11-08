@@ -17,19 +17,20 @@ public class QueryTaskReader implements ItemReader<QueryTask> {
     @Qualifier("postgresJdbcTemplate")
     private JdbcTemplate postgresJdbcTemplate;
 
-    private Iterator<QueryTask> queryTaskIterator;
+    
 
     @Override
     public QueryTask read() {
-        if (queryTaskIterator == null || !queryTaskIterator.hasNext()) {
-            List<QueryTask> queryTasks = fetchQueryTasksFromPostgres();
-            queryTaskIterator = queryTasks.iterator();
-        }
+        Iterator<QueryTask> queryTaskIterator = null;
+        List<QueryTask> queryTasks = fetchQueryTasksFromPostgres();
+        System.out.println("QueryTaskReader: " + queryTasks.size());
+        queryTaskIterator = queryTasks.iterator();
         return queryTaskIterator.hasNext() ? queryTaskIterator.next() : null;
     }
 
     private List<QueryTask> fetchQueryTasksFromPostgres() {
         String sql = "SELECT id, query, chunk_size, status FROM postgre_table WHERE status = 'PENDING'";
+        System.out.println("QueryTaskReader: " + sql);
         return postgresJdbcTemplate.query(sql, (rs, rowNum) -> {
             QueryTask task = new QueryTask();
             task.setId(rs.getLong("id"));

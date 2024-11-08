@@ -31,7 +31,7 @@ public class QueryTaskProcessor implements ItemProcessor<QueryTask, List<QueryTa
     
     @Override
     public List<QueryTask> process(QueryTask task) throws Exception {
-    	
+        System.out.println("process job for task: " + task.getJobName());
     	 createAndRunJob(task);
     	 
 		return null;
@@ -40,7 +40,7 @@ public class QueryTaskProcessor implements ItemProcessor<QueryTask, List<QueryTa
     }
 
     private void createAndRunJob(QueryTask task) throws Exception {
-    	
+    	System.out.println("Creating job for task: " + task.getJobName());
     	jobService.runJob(task.getJobName(), task);
     	
     	
